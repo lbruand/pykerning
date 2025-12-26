@@ -270,3 +270,21 @@ class TestFpdfWriter:
 
         assert os.path.exists(temp_pdf_path)
         assert os.path.getsize(temp_pdf_path) > 0
+
+    def test_close_returns_bytes_when_path_is_none(self):
+        """Test that close() returns PDF bytes when path is None."""
+        writer = FpdfWriter(None, 612, 792)
+
+        # Create a font and draw some text
+        font = FpdfFont(writer.pdf, 'Helvetica', '', 12)
+        writer.set_font(font)
+        writer.draw_text(100, 100, 'Hello, Bytes!')
+
+        # Close should return bytes/bytearray
+        pdf_bytes = writer.close()
+
+        assert pdf_bytes is not None
+        assert isinstance(pdf_bytes, (bytes, bytearray))
+        assert len(pdf_bytes) > 0
+        # PDF files start with %PDF
+        assert pdf_bytes.startswith(b'%PDF')

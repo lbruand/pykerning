@@ -65,7 +65,7 @@ class FpdfWriter:
         """Initialize the PDF writer.
 
         Args:
-            path: Output PDF file path
+            path: Output PDF file path, or None to return PDF as bytes in close()
             width_pt: Page width in points
             height_pt: Page height in points
         """
@@ -90,8 +90,16 @@ class FpdfWriter:
         self.current_font = None
 
     def close(self):
-        """Save and close the PDF."""
-        self.pdf.output(self.path)
+        """Save and close the PDF.
+
+        Returns:
+            bytearray or None: PDF content as bytearray if path was None, otherwise None
+        """
+        if self.path is None:
+            return self.pdf.output()
+        else:
+            self.pdf.output(self.path)
+            return None
 
     def load_font(self, path):
         """Load a TrueType font file.
