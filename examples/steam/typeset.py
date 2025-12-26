@@ -57,8 +57,8 @@ def main(argv):
 
     actions.extend(parse_essay(essay_text, my_break))
 
-    # Create PDF writer (no QApplication needed!)
-    writer = FpdfWriter('book.pdf', page_width, page_height)
+    # Create PDF writer with bytes output (no QApplication needed!)
+    writer = FpdfWriter(None, page_width, page_height)
 
     # Load fonts
     writer.load_font('fonts/GenBasB.ttf')
@@ -89,8 +89,13 @@ def main(argv):
                 function = draw_texts
             function(fonts, line, writer, *args)
 
-    # Save the PDF
-    writer.close()
+    # Get PDF as bytes
+    pdf_bytes = writer.close()
+
+    # Write bytes to file
+    with open('book.pdf', 'wb') as f:
+        f.write(pdf_bytes)
+
     print(f"PDF generated successfully: book.pdf")
 
 
