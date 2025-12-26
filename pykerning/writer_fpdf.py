@@ -6,6 +6,24 @@ This module provides an alternative to QtWriter that uses fpdf2 instead of PySid
 from fpdf import FPDF
 from pathlib import Path
 
+# Unit conversion constants
+POINTS_PER_INCH = 72
+MM_PER_INCH = 25.4
+
+# Font metric ratios (typical values for matching Qt's metrics)
+FONT_ASCENT_RATIO = 0.8
+FONT_DESCENT_RATIO = 0.2
+FONT_LEADING_RATIO = 0.2
+
+# Font family constants
+DEFAULT_FONT_FAMILY = "GentiumBasic"
+
+# Font style codes for fpdf2
+STYLE_REGULAR = ''
+STYLE_ITALIC = 'I'
+STYLE_BOLD = 'B'
+STYLE_BOLD_ITALIC = 'BI'
+
 
 class FpdfFont:
     """Font wrapper that matches the QtFont interface."""
@@ -19,10 +37,9 @@ class FpdfFont:
         # Calculate font metrics
         # fpdf2 uses points, and we need to match Qt's metrics
         self.height = font_size
-        # Typical font metrics ratios
-        self.ascent = font_size * 0.8
-        self.descent = font_size * 0.2
-        self.leading = font_size * 0.2
+        self.ascent = font_size * FONT_ASCENT_RATIO
+        self.descent = font_size * FONT_DESCENT_RATIO
+        self.leading = font_size * FONT_LEADING_RATIO
 
     def width_of(self, text):
         """Returns the width of text in points."""
@@ -57,9 +74,8 @@ class FpdfWriter:
         self.height_pt = height_pt
 
         # Convert points to mm for fpdf2
-        # 1 point = 1/72 inch, 1 inch = 25.4 mm
-        self.width_mm = width_pt * 25.4 / 72
-        self.height_mm = height_pt * 25.4 / 72
+        self.width_mm = width_pt * MM_PER_INCH / POINTS_PER_INCH
+        self.height_mm = height_pt * MM_PER_INCH / POINTS_PER_INCH
 
         # Create PDF with custom page size
         self.pdf = FPDF(unit='pt', format=(width_pt, height_pt))
@@ -94,16 +110,16 @@ class FpdfWriter:
         filename = path_obj.stem
 
         # Determine style from filename
-        style = ''
+        style = STYLE_REGULAR
         if filename.endswith('I'):
-            style = 'I'  # Italic
+            style = STYLE_ITALIC
         elif filename.endswith('B'):
-            style = 'B'  # Bold
+            style = STYLE_BOLD
         elif filename.endswith('BI') or filename.endswith('IB'):
-            style = 'BI'  # Bold Italic
+            style = STYLE_BOLD_ITALIC
 
         # For Gentium Basic fonts, use a consistent family name
-        family_name = "GentiumBasic"
+        family_name = DEFAULT_FONT_FAMILY
 
         # Add font to PDF
         self.pdf.add_font(family_name, style, str(path_obj))
@@ -123,14 +139,14 @@ class FpdfWriter:
 
         for name, family, style, size in font_specs:
             # Map family and style to the loaded font
-            fpdf_family = "GentiumBasic"  # We use a consistent name
+            fpdf_family = DEFAULT_FONT_FAMILY
 
             # Map style names to fpdf2 style codes
-            fpdf_style = ''
+            fpdf_style = STYLE_REGULAR
             if 'Italic' in style:
-                fpdf_style = 'I'
+                fpdf_style = STYLE_ITALIC
             elif 'Bold' in style:
-                fpdf_style = 'B'
+                fpdf_style = STYLE_BOLD
 
             fonts[name] = FpdfFont(self.pdf, fpdf_family, fpdf_style, size)
 
