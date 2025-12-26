@@ -10,7 +10,7 @@ import os
 import sys
 from pathlib import Path
 
-# Add the project root to the path to import writer_fpdf
+# Add the project root to the path to import pykerning
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from typesetting.composing import (
@@ -20,7 +20,7 @@ from typesetting.composing import (
 from typesetting.knuth import knuth_paragraph
 from typesetting.skeleton import single_column_layout, unroll
 
-from writer_fpdf import FpdfWriter
+from pykerning import FpdfWriter
 
 INCH = 72
 INDENT = INCH / 4

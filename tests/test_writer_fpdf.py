@@ -6,7 +6,7 @@ import tempfile
 import os
 from fpdf import FPDF
 
-from writer_fpdf import FpdfWriter, FpdfFont
+from pykerning.writer_fpdf import FpdfWriter, FpdfFont
 
 
 class TestFpdfFont:

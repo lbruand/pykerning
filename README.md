@@ -42,7 +42,8 @@ poetry run pytest tests/ -v
 
 ## Project Structure
 
-- `writer_fpdf.py` - FpdfWriter class that implements the writer interface using fpdf2
+- `pykerning/` - Main package
+  - `writer_fpdf.py` - FpdfWriter class that implements the writer interface using fpdf2
 - `examples/steam/` - Steam essay example
   - `typeset.py` - Main script that typesets the Steam essay
   - `steam.txt` - The essay text to be typeset
