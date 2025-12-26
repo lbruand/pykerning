@@ -27,17 +27,27 @@ poetry install
 Generate the typeset PDF:
 
 ```bash
-poetry run python typeset.py
+poetry run python examples/steam/typeset.py
 ```
 
-This will create `book.pdf` - a professionally typeset version of the "Steam" essay.
+This will create `book.pdf` in the `examples/steam/` directory - a professionally typeset version of the "Steam" essay.
+
+## Running Tests
+
+Run the test suite:
+
+```bash
+poetry run pytest tests/ -v
+```
 
 ## Project Structure
 
-- `typeset.py` - Main script that typesets the Steam essay
 - `writer_fpdf.py` - FpdfWriter class that implements the writer interface using fpdf2
-- `steam.txt` - The essay text to be typeset
-- `fonts/` - Gentium Basic TrueType fonts (Regular, Italic, Bold)
+- `examples/steam/` - Steam essay example
+  - `typeset.py` - Main script that typesets the Steam essay
+  - `steam.txt` - The essay text to be typeset
+  - `fonts/` - Gentium Basic TrueType fonts (Regular, Italic, Bold)
+- `tests/` - Pytest test suite for FpdfWriter
 
 ## Key Differences from Original
 
