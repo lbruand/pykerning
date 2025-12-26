@@ -11,6 +11,8 @@ python = "^3.12"
 fpdf2 = "^2.8.2"
 typesetting = {git = "https://github.com/brandon-rhodes/python-typesetting.git"}
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core"]
