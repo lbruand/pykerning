@@ -100,15 +100,15 @@ class TestFpdfWriter:
             os.remove(path)
 
     @pytest.fixture
-    def writer(self, temp_pdf_path):
-        """Create a FpdfWriter instance for testing."""
-        return FpdfWriter(temp_pdf_path, 612, 792)
+    def writer(self):
+        """Create a FpdfWriter instance for testing (with path=None for bytes output)."""
+        return FpdfWriter(None, 612, 792)
 
-    def test_init(self, temp_pdf_path):
+    def test_init(self):
         """Test FpdfWriter initialization."""
-        writer = FpdfWriter(temp_pdf_path, 612, 792)
+        writer = FpdfWriter(None, 612, 792)
 
-        assert writer.path == temp_pdf_path
+        assert writer.path is None
         assert writer.width_pt == 612
         assert writer.height_pt == 792
         assert isinstance(writer.pdf, FPDF)
@@ -116,9 +116,9 @@ class TestFpdfWriter:
         assert writer.fonts == {}
         assert writer.current_font is None
 
-    def test_init_width_height_conversion(self, temp_pdf_path):
+    def test_init_width_height_conversion(self):
         """Test that width and height are converted to mm correctly."""
-        writer = FpdfWriter(temp_pdf_path, 72, 72)
+        writer = FpdfWriter(None, 72, 72)
 
         # 1 point = 1/72 inch, 1 inch = 25.4 mm
         # 72 points = 1 inch = 25.4 mm
@@ -140,8 +140,7 @@ class TestFpdfWriter:
 
     def test_load_font_with_existing_file(self, writer):
         """Test loading an existing font file."""
-        # This test assumes the fonts directory exists
-        font_path = 'fonts/GenBasR.ttf'
+        font_path = 'examples/steam/fonts/GenBasR.ttf'
         if os.path.exists(font_path):
             writer.load_font(font_path)
             assert str(Path(font_path)) in writer.loaded_fonts
@@ -153,7 +152,7 @@ class TestFpdfWriter:
 
     def test_load_font_italic(self, writer):
         """Test loading an italic font."""
-        font_path = 'fonts/GenBasI.ttf'
+        font_path = 'examples/steam/fonts/GenBasI.ttf'
         if os.path.exists(font_path):
             writer.load_font(font_path)
             family, style = writer.loaded_fonts[str(Path(font_path))]
@@ -164,7 +163,7 @@ class TestFpdfWriter:
 
     def test_load_font_bold(self, writer):
         """Test loading a bold font."""
-        font_path = 'fonts/GenBasB.ttf'
+        font_path = 'examples/steam/fonts/GenBasB.ttf'
         if os.path.exists(font_path):
             writer.load_font(font_path)
             family, style = writer.loaded_fonts[str(Path(font_path))]
@@ -236,25 +235,26 @@ class TestFpdfWriter:
         # This should not raise an exception
         writer.draw_text(100, 100, 'Test text')
 
-    def test_integration_create_simple_pdf(self, temp_pdf_path):
+    def test_integration_create_simple_pdf(self):
         """Integration test: Create a simple PDF with text."""
-        writer = FpdfWriter(temp_pdf_path, 612, 792)
+        writer = FpdfWriter(None, 612, 792)
 
         # Create a font and draw some text
         font = FpdfFont(writer.pdf, 'Helvetica', '', 12)
         writer.set_font(font)
         writer.draw_text(100, 100, 'Hello, World!')
 
-        # Save the PDF
-        writer.close()
+        # Get PDF as bytes
+        pdf_bytes = writer.close()
 
-        # Verify the file was created and has content
-        assert os.path.exists(temp_pdf_path)
-        assert os.path.getsize(temp_pdf_path) > 0
+        # Verify PDF was generated
+        assert pdf_bytes is not None
+        assert isinstance(pdf_bytes, (bytes, bytearray))
+        assert len(pdf_bytes) > 0
 
-    def test_integration_multiple_pages(self, temp_pdf_path):
+    def test_integration_multiple_pages(self):
         """Integration test: Create a PDF with multiple pages."""
-        writer = FpdfWriter(temp_pdf_path, 612, 792)
+        writer = FpdfWriter(None, 612, 792)
 
         font = FpdfFont(writer.pdf, 'Helvetica', '', 12)
         writer.set_font(font)
@@ -266,10 +266,12 @@ class TestFpdfWriter:
         writer.new_page()
         writer.draw_text(100, 100, 'Page 2')
 
-        writer.close()
+        pdf_bytes = writer.close()
 
-        assert os.path.exists(temp_pdf_path)
-        assert os.path.getsize(temp_pdf_path) > 0
+        # Verify PDF was generated with multiple pages
+        assert pdf_bytes is not None
+        assert isinstance(pdf_bytes, (bytes, bytearray))
+        assert len(pdf_bytes) > 0
 
     def test_close_returns_bytes_when_path_is_none(self):
         """Test that close() returns PDF bytes when path is None."""
