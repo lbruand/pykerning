@@ -13,12 +13,12 @@ from pathlib import Path
 # Add the project root to the path to import pykerning
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from typesetting.composing import (
+from pykerning.composing import (
     avoid_widows_and_orphans, centered_paragraph,
     compose, section_break, vskip,
 )
-from typesetting.knuth import knuth_paragraph
-from typesetting.skeleton import single_column_layout, unroll
+from pykerning.knuth import knuth_paragraph
+from pykerning.skeleton import single_column_layout, unroll
 
 from pykerning import FpdfWriter
 
