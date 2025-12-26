@@ -8,6 +8,10 @@ that uses fpdf2 for PDF generation instead of Qt.
 import argparse
 import os
 import sys
+from pathlib import Path
+
+# Add the project root to the path to import writer_fpdf
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from typesetting.composing import (
     avoid_widows_and_orphans, centered_paragraph,
