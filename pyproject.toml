@@ -1,0 +1,17 @@
+
+[tool.poetry]
+name = "pykerning"
+version = "0.1.0"
+description = ""
+authors = ["Lucas Bruand <l.bruand.pro@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fpdf2 = "^2.8.2"
+typesetting = {git = "https://github.com/brandon-rhodes/python-typesetting.git"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
